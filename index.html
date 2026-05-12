@@ -2,834 +2,312 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=1366">
+<meta http-equiv="X-Frame-Options" content="ALLOWALL">
+<meta http-equiv="Content-Security-Policy" content="frame-ancestors *;">
 <title>Employee Manager — The Abu Dhabi EDITION</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --gold: #C9974A;
-    --gold-light: #F2E4CA;
-    --gold-dark: #9B7035;
-    --sidebar-bg: #1A1C20;
-    --sidebar-text: #A8A8A8;
-    --sidebar-active: #C9974A;
-    --bg: #F5F3EE;
-    --surface: #FFFFFF;
-    --surface2: #F0EDE6;
-    --border: #E3DDD3;
-    --border-strong: #C8C0B2;
-    --text: #1C1B18;
-    --text-muted: #7A7469;
-    --text-faint: #ADA89F;
-    --status-active: #2E7D5A;
-    --status-active-bg: #E6F5EE;
-    --status-notice: #B86A00;
-    --status-notice-bg: #FFF3E0;
-    --status-inactive: #C0392B;
-    --status-inactive-bg: #FDEDEC;
-    --status-recruited: #1A6BB5;
-    --status-recruited-bg: #E8F2FC;
-    --radius: 8px;
-    --radius-lg: 12px;
-  }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-    font-size: 13px;
-  }
-
-  /* ——— SIDEBAR ——— */
-  .sidebar {
-    width: 210px;
-    min-width: 210px;
-    background: var(--sidebar-bg);
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    overflow-y: auto;
-  }
-
-  .sidebar-brand {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-  }
-
-  .brand-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    color: #FFFFFF;
-    line-height: 1.3;
-    letter-spacing: 0.01em;
-  }
-
-  .brand-sub {
-    font-size: 10px;
-    color: var(--gold);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-top: 4px;
-    font-weight: 500;
-  }
-
-  .sidebar-section {
-    padding: 20px 0 8px;
-  }
-
-  .sidebar-label {
-    font-size: 9px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    padding: 0 20px 8px;
-    font-weight: 600;
-  }
-
-  .sidebar-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 20px;
-    color: var(--sidebar-text);
-    cursor: pointer;
-    font-size: 12.5px;
-    transition: all 0.15s;
-    text-decoration: none;
-    border-left: 2px solid transparent;
-  }
-
-  .sidebar-item:hover {
-    background: rgba(255,255,255,0.05);
-    color: #fff;
-  }
-
-  .sidebar-item.active {
-    color: var(--gold);
-    background: rgba(201,151,74,0.1);
-    border-left: 2px solid var(--gold);
-  }
-
-  .sidebar-item svg { opacity: 0.7; flex-shrink: 0; }
-  .sidebar-item.active svg { opacity: 1; }
-
-  .sidebar-footer {
-    margin-top: auto;
-    padding: 16px 20px;
-    border-top: 1px solid rgba(255,255,255,0.07);
-    font-size: 11px;
-    color: rgba(255,255,255,0.25);
-  }
-
-  /* ——— MAIN ——— */
-  .main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  /* ——— TOP BAR ——— */
-  .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    flex-shrink: 0;
-  }
-
-  .filter-group { display: flex; flex-direction: column; gap: 4px; }
-
-  .filter-group-label {
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    font-weight: 600;
-  }
-
-  .filter-chips { display: flex; gap: 6px; }
-
-  .chip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 11px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-muted);
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-
-  .chip:hover { border-color: var(--border-strong); color: var(--text); }
-
-  .chip.chip-active { background: var(--status-active-bg); border-color: var(--status-active); color: var(--status-active); }
-  .chip.chip-recruited { background: var(--status-recruited-bg); border-color: var(--status-recruited); color: var(--status-recruited); }
-  .chip.chip-notice { background: var(--status-notice-bg); border-color: var(--status-notice); color: var(--status-notice); }
-  .chip.chip-inactive { background: var(--status-inactive-bg); border-color: var(--status-inactive); color: var(--status-inactive); }
-  .chip.chip-pos { background: rgba(201,151,74,0.08); border-color: var(--gold); color: var(--gold-dark); }
-
-  .chip-count {
-    background: rgba(0,0,0,0.08);
-    border-radius: 10px;
-    padding: 0 6px;
-    font-size: 10px;
-    font-weight: 600;
-    min-width: 18px;
-    text-align: center;
-  }
-
-  .topbar-divider { width: 1px; height: 40px; background: var(--border); margin: 0 4px; }
-
-  /* ——— TOOLBAR ——— */
-  .toolbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-
-  .search-wrap {
-    position: relative;
-    flex: 1;
-    max-width: 300px;
-  }
-
-  .search-wrap svg {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-faint);
-    pointer-events: none;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 7px 10px 7px 32px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    background: var(--surface2);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .search-input:focus { border-color: var(--gold); background: #fff; }
-  .search-input::placeholder { color: var(--text-faint); }
-
-  .emp-id-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: auto;
-  }
-
-  .emp-id-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-
-  .emp-id-input {
-    width: 110px;
-    padding: 7px 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    background: var(--surface2);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-
-  .emp-id-input:focus { border-color: var(--gold); background: #fff; }
-
-  .btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12.5px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-
-  .btn-primary {
-    background: var(--gold);
-    border-color: var(--gold);
-    color: #fff;
-  }
-
-  .btn-primary:hover { background: var(--gold-dark); border-color: var(--gold-dark); }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--text-muted);
-  }
-
-  .btn-ghost:hover { background: var(--surface2); color: var(--text); border-color: var(--border-strong); }
-
-  .btn-danger {
-    background: transparent;
-    color: var(--status-inactive);
-    border-color: var(--border);
-  }
-
-  .btn-danger:hover { background: var(--status-inactive-bg); border-color: var(--status-inactive); }
-
-  /* ——— FORM AREA ——— */
-  .form-area {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px 24px;
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto;
-    gap: 16px;
-  }
-
-  /* Hero row */
-  .hero-row {
-    grid-column: 1 / -1;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .hero-name {
-    flex: 1;
-  }
-
-  .hero-position {
-    display: flex;
-    gap: 12px;
-    flex: 2;
-  }
-
-  .hero-position > * { flex: 1; }
-
-  /* Cards */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 16px;
-  }
-
-  .card-title {
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    font-weight: 600;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .card-title svg { opacity: 0.5; }
-
-  /* Field */
-  .field { margin-bottom: 10px; }
-  .field:last-child { margin-bottom: 0; }
-
-  .field label {
-    display: block;
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 500;
-    margin-bottom: 4px;
-    letter-spacing: 0.02em;
-  }
-
-  .field input,
-  .field select {
-    width: 100%;
-    padding: 7px 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12.5px;
-    background: var(--surface2);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s, background 0.15s;
-    appearance: none;
-  }
-
-  .field input:focus,
-  .field select:focus { border-color: var(--gold); background: #fff; }
-
-  .field input::placeholder { color: var(--text-faint); }
-
-  .field-row { display: flex; gap: 8px; }
-  .field-row .field { flex: 1; }
-
-  /* Photo card */
-  .photo-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .photo-placeholder {
-    width: 100%;
-    aspect-ratio: 3/4;
-    max-height: 160px;
-    background: var(--surface2);
-    border-radius: var(--radius);
-    border: 1.5px dashed var(--border-strong);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: var(--text-faint);
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-
-  .photo-placeholder:hover { border-color: var(--gold); color: var(--gold-dark); }
-  .photo-placeholder span { font-size: 11px; font-weight: 500; }
-
-  .photo-actions { display: flex; gap: 8px; width: 100%; }
-  .photo-actions .btn { flex: 1; justify-content: center; font-size: 12px; padding: 6px 8px; }
-
-  /* Status badge */
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-  }
-
-  .status-badge::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-  }
-
-  .badge-active { background: var(--status-active-bg); color: var(--status-active); }
-  .badge-active::before { background: var(--status-active); }
-
-  /* Employment status card */
-  .status-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 12px;
-  }
-
-  .status-row:last-child { border-bottom: none; }
-  .status-row-label { color: var(--text-muted); font-weight: 500; }
-  .status-row-value { color: var(--text); font-weight: 500; }
-
-  /* Section divider in sidebar */
-  .sidebar-divider {
-    height: 1px;
-    background: rgba(255,255,255,0.07);
-    margin: 4px 0;
-  }
-
-  /* Folder btn */
-  .folder-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface2);
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: var(--text-muted);
-    transition: all 0.15s;
-    font-weight: 500;
-  }
-
-  .folder-btn:hover { border-color: var(--gold); color: var(--gold-dark); background: rgba(201,151,74,0.06); }
-
-  /* col span helpers */
-  .col-1 { grid-column: span 1; }
-  .col-2 { grid-column: span 2; }
-  .col-3 { grid-column: span 3; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 10px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --gold:#C9974A;--gold-dark:#9B7035;
+  --sb:#1A1C20;--st:#A8A8A8;
+  --bg:#F5F3EE;--s:#FFFFFF;--s2:#F0EDE6;
+  --b:#E3DDD3;--bs:#C8C0B2;
+  --t:#1C1B18;--tm:#7A7469;--tf:#ADA89F;
+  --green:#2E7D5A;--gbg:#E6F5EE;
+  --amber:#B86A00;--abg:#FFF3E0;
+  --red:#C0392B;--rbg:#FDEDEC;
+  --blue:#1A6BB5;--bbg:#E8F2FC;
+  --r:6px;--rl:10px;
+}
+html,body{width:1366px;height:768px;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t);display:flex;font-size:12px;}
+
+.sb{width:172px;min-width:172px;background:var(--sb);display:flex;flex-direction:column;height:768px;}
+.sb-brand{padding:16px 16px 13px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.sb-title{font-family:'Playfair Display',serif;font-size:14px;color:#fff;line-height:1.3;}
+.sb-sub{font-size:9px;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase;margin-top:3px;font-weight:600;}
+.sb-sec{padding:12px 0 4px;}
+.sb-lbl{font-size:8.5px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.28);padding:0 16px 5px;font-weight:600;}
+.sb-a{display:flex;align-items:center;gap:8px;padding:7px 16px;color:var(--st);cursor:pointer;font-size:11.5px;transition:all 0.15s;text-decoration:none;border-left:2px solid transparent;}
+.sb-a:hover{background:rgba(255,255,255,0.05);color:#fff;}
+.sb-a.on{color:var(--gold);background:rgba(201,151,74,0.1);border-left:2px solid var(--gold);}
+.sb-a svg{opacity:0.65;flex-shrink:0;}
+.sb-a.on svg{opacity:1;}
+.sb-div{height:1px;background:rgba(255,255,255,0.07);margin:3px 0;}
+.sb-foot{margin-top:auto;padding:12px 16px;border-top:1px solid rgba(255,255,255,0.07);font-size:10px;color:rgba(255,255,255,0.22);}
+
+.main{flex:1;display:flex;flex-direction:column;height:768px;overflow:hidden;}
+
+.topbar{background:var(--s);border-bottom:1px solid var(--b);padding:8px 18px;display:flex;align-items:center;gap:14px;flex-shrink:0;height:52px;}
+.fg{display:flex;flex-direction:column;gap:3px;}
+.fg-l{font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--tf);font-weight:600;}
+.chips{display:flex;gap:5px;}
+.chip{display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:14px;border:1px solid var(--b);background:var(--s);cursor:pointer;font-size:11px;font-weight:500;color:var(--tm);transition:all 0.15s;white-space:nowrap;}
+.chip:hover{border-color:var(--bs);color:var(--t);}
+.ca{background:var(--gbg);border-color:var(--green);color:var(--green);}
+.cr{background:var(--bbg);border-color:var(--blue);color:var(--blue);}
+.cn{background:var(--abg);border-color:var(--amber);color:var(--amber);}
+.ci{background:var(--rbg);border-color:var(--red);color:var(--red);}
+.cp{background:rgba(201,151,74,0.08);border-color:var(--gold);color:var(--gold-dark);}
+.cnt{background:rgba(0,0,0,0.08);border-radius:8px;padding:0 5px;font-size:9.5px;font-weight:700;}
+.tdiv{width:1px;height:34px;background:var(--b);}
+
+.toolbar{background:var(--s);border-bottom:1px solid var(--b);padding:6px 18px;display:flex;align-items:center;gap:7px;flex-shrink:0;height:38px;}
+.sw{position:relative;flex:1;max-width:250px;}
+.sw svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--tf);pointer-events:none;}
+.si{width:100%;padding:4px 8px 4px 27px;border:1px solid var(--b);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:12px;background:var(--s2);color:var(--t);outline:none;}
+.si:focus{border-color:var(--gold);background:#fff;}
+.si::placeholder{color:var(--tf);}
+.idw{display:flex;align-items:center;gap:6px;margin-left:auto;}
+.idl{font-size:11px;color:var(--tm);font-weight:500;}
+.idi{width:96px;padding:4px 8px;border:1px solid var(--b);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.04em;background:var(--s2);color:var(--t);outline:none;}
+.idi:focus{border-color:var(--gold);background:#fff;}
+.btn{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:var(--r);border:1px solid var(--b);font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all 0.15s;}
+.bp{background:var(--gold);border-color:var(--gold);color:#fff;}
+.bp:hover{background:var(--gold-dark);}
+.bg{background:transparent;color:var(--tm);}
+.bg:hover{background:var(--s2);color:var(--t);border-color:var(--bs);}
+.bd{background:transparent;color:var(--red);border-color:var(--b);}
+.bd:hover{background:var(--rbg);border-color:var(--red);}
+
+.hero{background:var(--s);border-bottom:1px solid var(--b);padding:6px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0;height:40px;}
+.hf{display:flex;align-items:center;gap:6px;}
+.hf label{font-size:11px;color:var(--tm);font-weight:500;white-space:nowrap;}
+.hf input,.hf select{padding:4px 8px;border:1px solid var(--b);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:12px;background:var(--s2);color:var(--t);outline:none;}
+.hf input:focus,.hf select:focus{border-color:var(--gold);background:#fff;}
+.hn input{width:280px;font-weight:500;}
+.hp input{width:190px;}
+.hd select{width:155px;appearance:none;}
+.hdiv{width:1px;height:22px;background:var(--b);}
+
+.form-area{flex:1;overflow-y:auto;padding:10px 18px;}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+
+.card{background:var(--s);border:1px solid var(--b);border-radius:var(--rl);padding:10px 12px;}
+.ct{font-size:8.5px;letter-spacing:0.13em;text-transform:uppercase;color:var(--tf);font-weight:600;margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.stack{display:flex;flex-direction:column;gap:10px;}
+
+.f{margin-bottom:5px;}
+.f:last-child{margin-bottom:0;}
+.f label{display:block;font-size:10.5px;color:var(--tm);font-weight:500;margin-bottom:2px;}
+.f input,.f select{width:100%;padding:4px 7px;border:1px solid var(--b);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:11.5px;background:var(--s2);color:var(--t);outline:none;transition:border-color 0.12s;appearance:none;}
+.f input:focus,.f select:focus{border-color:var(--gold);background:#fff;}
+.f input::placeholder{color:var(--tf);}
+.fr{display:flex;gap:6px;}
+.fr .f{flex:1;}
+
+.photo-zone{border-radius:var(--r);border:1.5px dashed var(--bs);background:var(--s2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--tf);cursor:pointer;transition:all 0.15s;padding:14px 8px;}
+.photo-zone:hover{border-color:var(--gold);color:var(--gold-dark);}
+.photo-zone span{font-size:10.5px;font-weight:500;}
+.photo-btns{display:flex;gap:6px;margin-top:6px;}
+.photo-btns .btn{flex:1;justify-content:center;padding:4px 6px;font-size:11px;}
+.folder-btn{width:100%;display:flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--b);border-radius:var(--r);background:var(--s2);cursor:pointer;margin-top:6px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--tm);transition:all 0.15s;font-weight:500;}
+.folder-btn:hover{border-color:var(--gold);color:var(--gold-dark);background:rgba(201,151,74,0.06);}
+
+.sr{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--b);font-size:11.5px;}
+.sr:last-child{border-bottom:none;padding-bottom:0;}
+.sl{color:var(--tm);font-weight:500;}
+.sv{color:var(--t);font-weight:500;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:14px;font-size:10.5px;font-weight:600;}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;}
+.bact{background:var(--gbg);color:var(--green);}
+.bact::before{background:var(--green);}
+.sep{margin-top:8px;padding-top:8px;border-top:1px solid var(--b);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--bs);border-radius:8px;}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sidebar-brand">
-    <div class="brand-title">Employee<br>Manager</div>
-    <div class="brand-sub">Abu Dhabi EDITION</div>
+<aside class="sb">
+  <div class="sb-brand">
+    <div class="sb-title">Employee<br>Manager</div>
+    <div class="sb-sub">Abu Dhabi EDITION</div>
   </div>
-
-  <div class="sidebar-section">
-    <div class="sidebar-label">Employee Data</div>
-    <a class="sidebar-item active" href="#">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      Overview
+  <div class="sb-sec">
+    <div class="sb-lbl">Employee Data</div>
+    <a class="sb-a on" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Overview
     </a>
-    <a class="sidebar-item" href="#">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      Recruitment Tracker
+    <a class="sb-a" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Recruitment Tracker
     </a>
-    <a class="sidebar-item" href="#">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
-      Job Data & History
+    <a class="sb-a" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Job Data &amp; History
     </a>
-    <a class="sidebar-item" href="#">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Personal Documents
+    <a class="sb-a" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Personal Documents
     </a>
-    <a class="sidebar-item" href="#">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-      Family Documents
+    <a class="sb-a" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Family Documents
     </a>
-    <a class="sidebar-item" href="#">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
-      Attachments
+    <a class="sb-a" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>Attachments
     </a>
-    <div class="sidebar-divider"></div>
-    <a class="sidebar-item" href="#">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Separation
+    <div class="sb-div"></div>
+    <a class="sb-a" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Separation
     </a>
   </div>
-
-  <div class="sidebar-section">
-    <div class="sidebar-label">Position Manager</div>
-    <a class="sidebar-item" href="#">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
-      Open / Change Position
+  <div class="sb-sec">
+    <div class="sb-lbl">Position Manager</div>
+    <a class="sb-a" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>Open / Change Position
     </a>
   </div>
-
-  <div class="sidebar-footer">v 3.5 · Marriott International</div>
+  <div class="sb-foot">v 3.5 · Marriott International</div>
 </aside>
 
-<!-- MAIN -->
 <div class="main">
 
-  <!-- TOP BAR: Filter chips -->
   <div class="topbar">
-    <div class="filter-group">
-      <span class="filter-group-label">Employees</span>
-      <div class="filter-chips">
-        <div class="chip chip-recruited">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          Recruited <span class="chip-count">4</span>
-        </div>
-        <div class="chip chip-active">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Active <span class="chip-count">87</span>
-        </div>
-        <div class="chip chip-notice">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Notice <span class="chip-count">3</span>
-        </div>
-        <div class="chip chip-inactive">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-          Inactive <span class="chip-count">12</span>
-        </div>
+    <div class="fg">
+      <span class="fg-l">Employees</span>
+      <div class="chips">
+        <div class="chip cr"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Recruited<span class="cnt">4</span></div>
+        <div class="chip ca"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Active<span class="cnt">87</span></div>
+        <div class="chip cn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Notice<span class="cnt">3</span></div>
+        <div class="chip ci"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Inactive<span class="cnt">12</span></div>
       </div>
     </div>
-
-    <div class="topbar-divider"></div>
-
-    <div class="filter-group">
-      <span class="filter-group-label">Positions</span>
-      <div class="filter-chips">
-        <div class="chip chip-pos">Opened <span class="chip-count">5</span></div>
-        <div class="chip chip-pos">Vacant <span class="chip-count">8</span></div>
-        <div class="chip chip-pos">Budgeted <span class="chip-count">120</span></div>
-        <div class="chip chip-pos">Occupancy <span class="chip-count">93%</span></div>
+    <div class="tdiv"></div>
+    <div class="fg">
+      <span class="fg-l">Positions</span>
+      <div class="chips">
+        <div class="chip cp">Opened<span class="cnt">5</span></div>
+        <div class="chip cp">Vacant<span class="cnt">8</span></div>
+        <div class="chip cp">Budgeted<span class="cnt">120</span></div>
+        <div class="chip cp">Occupancy<span class="cnt">93%</span></div>
       </div>
     </div>
   </div>
 
-  <!-- TOOLBAR -->
   <div class="toolbar">
-    <div class="search-wrap">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      <input class="search-input" type="text" placeholder="Search employee name…">
+    <div class="sw">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="si" type="text" placeholder="Search employee name…">
     </div>
+    <button class="btn bp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add New</button>
+    <button class="btn bg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save Changes</button>
+    <button class="btn bd"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg>Separate</button>
+    <div class="idw"><span class="idl">Employee ID</span><input class="idi" type="text" placeholder="EMP-0000"></div>
+  </div>
 
-    <button class="btn btn-primary">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Add New
-    </button>
-    <button class="btn btn-ghost">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-      Save Changes
-    </button>
-    <button class="btn btn-danger">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
-      Separate
-    </button>
-
-    <div class="emp-id-wrap">
-      <span class="emp-id-label">Employee ID</span>
-      <input class="emp-id-input" type="text" placeholder="EMP-0000">
+  <div class="hero">
+    <div class="hf hn"><label>Full Name</label><input type="text" placeholder="Enter full name…"></div>
+    <div class="hdiv"></div>
+    <div class="hf hp"><label>Position</label><input type="text" value="Housekeeping Attendant"></div>
+    <div class="hdiv"></div>
+    <div class="hf hd">
+      <label>Department</label>
+      <select><option>Housekeeping</option><option>Front Office</option><option>F&amp;B Service</option><option>Engineering</option><option>Human Resources</option><option>Finance</option><option>Sales &amp; Marketing</option><option>Security</option><option>Spa &amp; Wellness</option></select>
     </div>
   </div>
 
-  <!-- FORM AREA -->
   <div class="form-area">
-    <div class="form-grid">
+    <div class="grid">
 
-      <!-- Full Name — spans full row -->
-      <div class="col-3">
-        <div class="card" style="padding: 12px 16px;">
-          <div style="display:flex; align-items:center; gap:16px;">
-            <div style="flex:1;">
-              <label style="font-size:11px; color:var(--text-muted); font-weight:500; display:block; margin-bottom:4px;">Full Name</label>
-              <input type="text" placeholder="Enter employee full name…" style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; background:var(--surface2); color:var(--text); outline:none;">
-            </div>
-            <div style="width:180px;">
-              <label style="font-size:11px; color:var(--text-muted); font-weight:500; display:block; margin-bottom:4px;">Position</label>
-              <input type="text" placeholder="e.g. Housekeeping Attendant" value="Housekeeping Attendant" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:13px; background:var(--surface2); color:var(--text); outline:none;">
-            </div>
-            <div style="width:160px;">
-              <label style="font-size:11px; color:var(--text-muted); font-weight:500; display:block; margin-bottom:4px;">Department</label>
-              <select style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:13px; background:var(--surface2); color:var(--text); outline:none; appearance:none;">
-                <option>Housekeeping</option>
-                <option>Front Office</option>
-                <option>F&B</option>
-                <option>Engineering</option>
-                <option>HR</option>
-                <option>Finance</option>
-                <option>Sales & Marketing</option>
-                <option>Security</option>
-              </select>
-            </div>
-          </div>
+      <!-- COL 1: Personal Info + Contact -->
+      <div class="card">
+        <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Personal Info</div>
+        <div class="fr">
+          <div class="f"><label>First Name</label><input type="text" placeholder="—"></div>
+          <div class="f"><label>Last Name</label><input type="text" placeholder="—"></div>
+        </div>
+        <div class="f"><label>Nationality</label><input type="text" placeholder="—"></div>
+        <div class="fr">
+          <div class="f"><label>Gender</label><select><option value="">—</option><option>Male</option><option>Female</option></select></div>
+          <div class="f"><label>Birth Date</label><input type="date"></div>
+        </div>
+        <div class="fr">
+          <div class="f"><label>Religion</label><select><option value="">—</option><option>Islam</option><option>Christianity</option><option>Hinduism</option><option>Other</option></select></div>
+          <div class="f"><label>Marital Status</label><select><option value="">—</option><option>Single</option><option>Married</option><option>Divorced</option></select></div>
+        </div>
+        <div class="f"><label>Kids</label><input type="number" min="0" placeholder="0" style="width:70px;"></div>
+        <div class="sep">
+          <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 2 2 0 012 .97h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6z"/></svg>Contact Details</div>
+          <div class="f"><label>Email Address</label><input type="email" placeholder="name@example.com"></div>
+          <div class="f"><label>Contact Number</label><input type="tel" placeholder="+971 —"></div>
         </div>
       </div>
 
-      <!-- Personal Info -->
-      <div class="card col-1">
-        <div class="card-title">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          Personal Info
-        </div>
-        <div class="field"><label>First Name</label><input type="text" placeholder="—"></div>
-        <div class="field"><label>Last Name</label><input type="text" placeholder="—"></div>
-        <div class="field"><label>Nationality</label><input type="text" placeholder="—"></div>
-        <div class="field-row">
-          <div class="field">
-            <label>Gender</label>
-            <select><option value="">—</option><option>Male</option><option>Female</option></select>
-          </div>
-          <div class="field">
-            <label>Birth Date</label>
-            <input type="date">
+      <!-- COL 2: Ticket + Medical + Housing -->
+      <div class="stack">
+        <div class="card">
+          <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Ticket Entitlement</div>
+          <div class="f"><label>Home Destination</label><input type="text" placeholder="e.g. Cairo, EG"></div>
+          <div class="fr">
+            <div class="f"><label>Frequency</label><select><option value="">—</option><option>Annual</option><option>Biannual</option></select></div>
+            <div class="f"><label>Adult</label><input type="number" min="0" placeholder="0"></div>
+            <div class="f"><label>Child</label><input type="number" min="0" placeholder="0"></div>
           </div>
         </div>
-        <div class="field">
-          <label>Religion</label>
-          <select><option value="">—</option><option>Islam</option><option>Christianity</option><option>Other</option></select>
+        <div class="card">
+          <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Medical Insurance</div>
+          <div class="fr">
+            <div class="f"><label>Adult Policy #</label><input type="text" placeholder="—"></div>
+            <div class="f"><label>Child Policy #</label><input type="text" placeholder="—"></div>
+          </div>
         </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Marital Status</label>
-            <select><option value="">—</option><option>Single</option><option>Married</option><option>Divorced</option></select>
+        <div class="card" style="flex:1;">
+          <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Housing Info</div>
+          <div class="f"><label>Housing Location</label><input type="text" placeholder="—"></div>
+          <div class="fr">
+            <div class="f"><label>Apartment Type</label><select><option value="">—</option><option>Studio</option><option>1BR</option><option>2BR</option><option>3BR</option></select></div>
+            <div class="f"><label>Apt. No.</label><input type="text" placeholder="—"></div>
           </div>
-          <div class="field">
-            <label>Kids</label>
-            <input type="number" min="0" placeholder="0">
-          </div>
+          <div class="f"><label>Room</label><input type="text" placeholder="—"></div>
         </div>
       </div>
 
-      <!-- Ticket + Medical + Contact + Previous -->
-      <div class="col-1" style="display:flex; flex-direction:column; gap:16px;">
-
+      <!-- COL 3: Previous Job + Marriott + mHUB -->
+      <div class="stack">
         <div class="card">
-          <div class="card-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            Ticket Entitlement
-          </div>
-          <div class="field"><label>Home Destination</label><input type="text" placeholder="e.g. Cairo, EG"></div>
-          <div class="field-row">
-            <div class="field">
-              <label>Frequency</label>
-              <select><option value="">—</option><option>Annual</option><option>Biannual</option></select>
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field"><label>Adult</label><input type="number" min="0" placeholder="0"></div>
-            <div class="field"><label>Child</label><input type="number" min="0" placeholder="0"></div>
-          </div>
+          <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Previous Job Details</div>
+          <div class="f"><label>Previous Property</label><input type="text" placeholder="—"></div>
+          <div class="f"><label>Point of Hire</label><input type="text" placeholder="e.g. Cairo, Egypt"></div>
         </div>
-
         <div class="card">
-          <div class="card-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            Medical Insurance
-          </div>
-          <div class="field-row">
-            <div class="field"><label>Adult</label><input type="text" placeholder="Policy #"></div>
-            <div class="field"><label>Child</label><input type="text" placeholder="Policy #"></div>
-          </div>
+          <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Marriott Experience</div>
+          <div class="f"><label>mHUB Service Date</label><input type="date"></div>
+          <div class="f"><label>Marriott Transfer From</label><input type="text" placeholder="—"></div>
+          <div class="f"><label>Locker Number</label><input type="text" placeholder="—"></div>
         </div>
-
-        <div class="card">
-          <div class="card-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 .97h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
-            Contact Details
-          </div>
-          <div class="field"><label>Email Address</label><input type="email" placeholder="name@example.com"></div>
-          <div class="field"><label>Contact Number</label><input type="tel" placeholder="+971 —"></div>
+        <div class="card" style="flex:1;">
+          <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>mHUB IDs</div>
+          <div class="f"><label>Emirates ID (EID)</label><input type="text" placeholder="784-XXXX-XXXXXXX-X"></div>
+          <div class="f"><label>Person Number</label><input type="text" placeholder="—"></div>
         </div>
-
       </div>
 
-      <!-- Right column: Photo + Employment Status + mHUB IDs -->
-      <div class="col-1" style="display:flex; flex-direction:column; gap:16px;">
-
-        <div class="photo-card">
-          <div class="card-title" style="width:100%;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            Employee Photo
-          </div>
-          <div class="photo-placeholder">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <!-- COL 4: Photo + Employment Status -->
+      <div class="stack">
+        <div class="card" style="flex:0 0 auto;">
+          <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Employee Photo</div>
+          <div class="photo-zone">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             <span>Click to upload</span>
           </div>
-          <div class="photo-actions">
-            <button class="btn btn-ghost" style="font-size:12px; padding:6px 8px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Add Photo
-            </button>
-            <button class="btn btn-ghost" style="font-size:12px; padding:6px 8px; color:var(--status-inactive);">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-              Clear
-            </button>
+          <div class="photo-btns">
+            <button class="btn bg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Add Photo</button>
+            <button class="btn bd"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>Clear</button>
           </div>
           <button class="folder-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
             Open Employee Folder
           </button>
         </div>
-
-        <div class="card">
-          <div class="card-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
-            Employment Status
-          </div>
-          <div class="status-row">
-            <span class="status-row-label">Status</span>
-            <span class="status-badge badge-active">Active</span>
-          </div>
-          <div class="status-row">
-            <span class="status-row-label">Joining Date</span>
-            <input type="date" style="border:none; background:transparent; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; color:var(--text); outline:none; padding:0;">
-          </div>
-          <div class="status-row">
-            <span class="status-row-label">Tenure</span>
-            <span class="status-row-value" style="color:var(--text-muted);">—</span>
-          </div>
-          <div class="status-row">
-            <span class="status-row-label">Contract Exp.</span>
-            <input type="date" style="border:none; background:transparent; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; color:var(--text); outline:none; padding:0;">
-          </div>
+        <div class="card" style="flex:1;">
+          <div class="ct"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>Employment Status</div>
+          <div class="sr"><span class="sl">Status</span><span class="badge bact">Active</span></div>
+          <div class="sr"><span class="sl">Joining Date</span><input id="jd" type="date" style="border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:500;color:var(--t);outline:none;padding:0;"></div>
+          <div class="sr"><span class="sl">Tenure</span><span class="sv" id="ten" style="color:var(--tm);">—</span></div>
+          <div class="sr"><span class="sl">Contract Exp. Date</span><input type="date" style="border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:500;color:var(--t);outline:none;padding:0;"></div>
         </div>
-
-        <div class="card">
-          <div class="card-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            mHUB IDs
-          </div>
-          <div class="field"><label>EID</label><input type="text" placeholder="784-XXXX-XXXXXXX-X"></div>
-          <div class="field"><label>Person Number</label><input type="text" placeholder="—"></div>
-        </div>
-
-      </div>
-
-      <!-- Row 3: Housing + Previous Job + Marriott Experience -->
-      <div class="card col-1">
-        <div class="card-title">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Housing Info
-        </div>
-        <div class="field"><label>Housing Location</label><input type="text" placeholder="—"></div>
-        <div class="field-row">
-          <div class="field">
-            <label>Apartment Type</label>
-            <select><option value="">—</option><option>Studio</option><option>1BR</option><option>2BR</option><option>3BR</option></select>
-          </div>
-          <div class="field">
-            <label>Apartment No.</label>
-            <input type="text" placeholder="—">
-          </div>
-        </div>
-        <div class="field"><label>Room</label><input type="text" placeholder="—"></div>
-      </div>
-
-      <div class="card col-1">
-        <div class="card-title">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Previous Job Details
-        </div>
-        <div class="field"><label>Previous Property</label><input type="text" placeholder="—"></div>
-        <div class="field"><label>Point of Hire</label><input type="text" placeholder="e.g. Cairo, Egypt"></div>
-      </div>
-
-      <div class="card col-1">
-        <div class="card-title">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          Marriott Experience
-        </div>
-        <div class="field"><label>mHUB Service Date</label><input type="date"></div>
-        <div class="field"><label>Marriott Transfer</label><input type="text" placeholder="—"></div>
-        <div class="field"><label>Locker Number</label><input type="text" placeholder="—"></div>
       </div>
 
     </div>
@@ -837,38 +315,19 @@
 </div>
 
 <script>
-  document.querySelectorAll('.sidebar-item').forEach(item => {
-    item.addEventListener('click', function(e) {
-      e.preventDefault();
-      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-      this.classList.add('active');
-    });
+document.querySelectorAll('.sb-a').forEach(el=>{
+  el.addEventListener('click',function(e){
+    e.preventDefault();
+    document.querySelectorAll('.sb-a').forEach(i=>i.classList.remove('on'));
+    this.classList.add('on');
   });
-
-  document.querySelectorAll('.chip').forEach(chip => {
-    chip.addEventListener('click', function() {
-      const siblings = this.parentElement.querySelectorAll('.chip');
-      siblings.forEach(s => s.style.opacity = '0.5');
-      this.style.opacity = '1';
-      setTimeout(() => siblings.forEach(s => s.style.opacity = '1'), 600);
-    });
-  });
-
-  const joiningInput = document.querySelector('input[type="date"]');
-  if (joiningInput) {
-    joiningInput.addEventListener('change', function() {
-      const today = new Date();
-      const start = new Date(this.value);
-      const diffMs = today - start;
-      const months = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 30.44));
-      const years = Math.floor(months / 12);
-      const remMonths = months % 12;
-      const tenureEl = document.querySelector('.status-row:nth-child(3) .status-row-value');
-      if (tenureEl) {
-        tenureEl.textContent = years > 0 ? `${years}y ${remMonths}m` : `${remMonths} months`;
-      }
-    });
-  }
+});
+document.getElementById('jd').addEventListener('change',function(){
+  const s=new Date(this.value),n=new Date(),ms=n-s;
+  if(ms<0){document.getElementById('ten').textContent='—';return;}
+  const mo=Math.floor(ms/(1000*60*60*24*30.44)),y=Math.floor(mo/12),m=mo%12;
+  document.getElementById('ten').textContent=y>0?`${y}y ${m}m`:`${m} months`;
+});
 </script>
 </body>
 </html>
